@@ -1,0 +1,39 @@
+<div>
+
+    <form>
+
+        <fieldset>
+
+            <legend>Detail</legend>
+
+            <br/>
+
+            <div>
+                <div>
+
+                    <div class="control-group">
+                        <label for="id" class="control-label">Id:</label>
+
+                        <div class="controls">
+                            <input id="id" name="id" type="text" value="<%= _id === null ? '' : _id %>" disabled/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="status" class="control-label">Status:</label>
+
+                        <div class="controls">
+                            <input type="text" id="status" name="status" value="<%= status %>"/>
+                            <span class="help-inline"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </fieldset>
+
+    </form>
+
+</div>
+

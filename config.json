@@ -1,0 +1,4 @@
+﻿
+{
+  "POSTGRESS_URI" : "postgres://test:test@localhost/stride_apps"
+}
