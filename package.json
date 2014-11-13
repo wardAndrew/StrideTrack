@@ -1,0 +1,25 @@
+{
+  "name": "StrideTrack",
+  "version": "0.0.0",
+  "description": "StrideTrack ===========",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wardAndrew/StrideTrack.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/wardAndrew/StrideTrack/issues"
+  },
+  "dependencies": {
+    "express": "~4.10.2",
+    "nconf": "~0.6.9",
+    "pg": "~3.6.3",
+    "knex": "~0.7.3"
+  }
+}
