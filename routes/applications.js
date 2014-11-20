@@ -14,8 +14,8 @@ var client = new pg.Client(connectionString);
 exports.findStatus = function (req, res) {
     console.log('Find status');
 
-    knex('status').select('id', 'name').then(function (rows) { 
-        res.send({"success" : true, "result": rows});
+    knex('status').select('id', 'name').then(function (data) { 
+        res.send({"success" : true, "data": data});
     }).catch(function(error) {
         res.send({"error" : error});
     });;
@@ -24,8 +24,12 @@ exports.findStatus = function (req, res) {
 exports.findApplicantsStatus = function (req, res) {
     console.log('Find enrollment status');
 
-    knex('ifp_enroll_status').select('status_id').count('status_id').groupBy('status_id').then(function (rows) { 
-        res.send({"success" : true, "result": rows});
+    //select count(status.id), name, status.id
+    //from status inner join ifp_enroll_status on status.id = ifp_enroll_status.status_id 
+    //group by status_id, name, status.id
+
+    knex('status').select('name', 'status.id').innerJoin('ifp_enroll_status', 'ifp_enroll_status.status_id', 'status.id').count('status.id').groupBy('status_id', 'name', 'status.id').then(function (data) { 
+        res.send({"success" : true, "data": data});
     }).catch(function(error) {
         res.send({"error" : error});
     });;
@@ -48,7 +52,7 @@ exports.findApplicants = function (req, res) {
 
     knex('ifp_app').select('ifp_app.app_id', 'stride_user.user_id', 'stride_user.email', 'ifp_app.created_on', 'ifp_app.plan_id' ).where(where).innerJoin('stride_user', 'ifp_app.user_id', 'stride_user.user_id')
         .then(function (rows) { 
-        res.send({"success" : true, "result": rows});
+        res.send({"success" : true, "data": rows});
     }).catch(function(error) {
         res.send({"error" : error});
     });
@@ -60,7 +64,7 @@ exports.findApplicantById = function (req, res) {
 
     knex('ifp_app').select('app_id', 'user_id', 'app_json').where({app_id : id}).then(function (result) {        
         result[0].app_json = JSON.parse(result[0].app_json);
-        res.send({"success" : true, "result": result});
+        res.send({"success" : true, "data": result});
     }).catch(function(error) {
         res.send({"error" : error});
     });
@@ -72,7 +76,7 @@ exports.findApplicantStatusById = function (req, res) {
 
     knex('ifp_app').select('status_id').where({app_id : id}).innerJoin('ifp_enroll_status', 'ifp_app_id', 'app_id')
         .then(function (rows) { 
-        res.send({"success" : true, "result": rows});
+        res.send({"success" : true, "data": rows});
     }).catch(function(error) {
         res.send({"error" : error});
     });
