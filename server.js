@@ -8,12 +8,22 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   methodOverride = require('method-override'),
   errorHandler = require('errorHandler'),
-  static = require('serve-static'),
+  serveStatic = require('serve-static'),
   http = require('http'),
   path = require('path'),
+  //nconf = require('nconf'),
   applications = require('./routes/applications');
 
 var app = express();
+
+//var dbConfig = {
+//  client: 'pg',
+//  connection: nconf.get("POSTGRESS_URI")
+//};
+//var knex = require('knex')(dbConfig);
+//var bookshelf = require('bookshelf')(knex);
+ 
+//app.set('bookshelf', bookshelf);
 app.set('port', process.env.PORT || 3000);
 
 app.get('/status', applications.findStatus);
@@ -27,7 +37,7 @@ app.use(logger('dev'));  /* 'default', 'short', 'tiny', 'dev' */
 app.use(bodyParser.json()); /* parse application/json */
 app.use(methodOverride());
 app.use(errorHandler());
-app.use(static(path.join(__dirname, 'client')));
+app.use(serveStatic(path.join(__dirname, 'client')));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("StrideTrack server listening on port " + app.get('port'));

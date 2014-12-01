@@ -1,24 +1,45 @@
-http = require('http');
+var http = require('http');
 var nconf = require('nconf');
-nconf.env().file({ file : 'config.json'});
-var pg = require('pg');
-var knex = require('knex')({
-  client: 'pg',
-  connection: nconf.get("POSTGRESS_URI")
-});
 var	format = require('util').format;
 
-var connectionString = nconf.get("POSTGRESS_URI");
-var client = new pg.Client(connectionString);
+nconf.env().file({ file : 'config.json'});
+
+var dbConfig = {
+  client: 'pg',
+  connection: nconf.get("POSTGRESS_URI")
+};
+var knex = require('knex')(dbConfig);
+var bookshelf = require('bookshelf')(knex);
+
+// Status model
+var Status = bookshelf.Model.extend({
+    tableName: 'status'
+});
+
+// Applicant model
+var Applicant = bookshelf.Model.extend({
+    tableName: 'ifp_app',
+
+    parse: function (response) {
+        response.app_json = JSON.parse(response.app_json);
+        return response;
+    },
+
+    initialize: function() {
+    },
+
+    validateSave: function() {
+    }
+});
 
 exports.findStatus = function (req, res) {
     console.log('Find status');
 
-    knex('status').select('id', 'name').then(function (data) { 
-        res.send({"success" : true, "data": data});
+    new Status().fetchAll().then(function(status) {
+        res.send({"success" : true, "data": status.toJSON()});
     }).catch(function(error) {
         res.send({"error" : error});
-    });;
+    });
 };
 
 exports.findApplicantsStatus = function (req, res) {
@@ -50,24 +71,36 @@ exports.findApplicants = function (req, res) {
         }
     }
 
-    knex('ifp_app').select('ifp_app.app_id', 'stride_user.user_id', 'stride_user.email', 'ifp_app.created_on', 'ifp_app.plan_id' ).where(where).innerJoin('stride_user', 'ifp_app.user_id', 'stride_user.user_id')
-        .then(function (rows) { 
-        res.send({"success" : true, "data": rows});
+    new Applicant(where).fetchAll().then(function(applicants) {
+        res.send({"success" : true, "data": applicants.toJSON()});
     }).catch(function(error) {
         res.send({"error" : error});
     });
+
+    //knex('ifp_app').select('ifp_app.app_id', 'stride_user.user_id', 'stride_user.email', 'ifp_app.created_on', 'ifp_app.plan_id' ).where(where).innerJoin('stride_user', 'ifp_app.user_id', 'stride_user.user_id')
+    //    .then(function (rows) { 
+    //    res.send({"success" : true, "data": rows});
+    //}).catch(function(error) {
+    //    res.send({"error" : error});
+    //});
 };
 
 exports.findApplicantById = function (req, res) {
     var id = req.params.id;
     console.log('Find applicant: ' + id);
 
-    knex('ifp_app').select('app_id', 'user_id', 'app_json').where({app_id : id}).then(function (result) {        
-        result[0].app_json = JSON.parse(result[0].app_json);
-        res.send({"success" : true, "data": result});
+    new Applicant({'app_id' : id}).fetch().then(function(applicant) {
+        res.send({"success" : true, "data": applicant});
     }).catch(function(error) {
         res.send({"error" : error});
     });
+
+    //knex('ifp_app').select('app_id', 'user_id', 'app_json').where({app_id : id}).then(function (result) {        
+    //    result[0].app_json = JSON.parse(result[0].app_json);
+    //    res.send({"success" : true, "data": result});
+    //}).catch(function(error) {
+    //    res.send({"error" : error});
+    //});
 };
 
 exports.findApplicantStatusById = function (req, res) {
