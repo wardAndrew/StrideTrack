@@ -1,7 +1,7 @@
 window.ApplicationGridView = Backbone.View.extend({
 
-    initialize: function (result) {
-        this.rows = result.attributes.result;
+    initialize: function (collection) {
+        this.rows = collection.models;
         this.render();
     },
 
@@ -63,6 +63,7 @@ window.ApplicationGridView = Backbone.View.extend({
 
         var table = $(this.el).find("#applicationsGrid").DataTable({
             searching: false,
+            lengthChange: false,
             data: this.rows,
             columns: [
                 { data: 'app_id' },

@@ -48,8 +48,12 @@ window.Application = Backbone.Model.extend({
     }
 });
 
-window.Applications = Backbone.Model.extend({
+window.Applications = Backbone.Collection.extend({
 
     model: Application,
-    url: "/applications"
+    url: "/applications",
+
+    parse: function (response) {
+        return response.data;
+    }
 });

@@ -18,7 +18,7 @@ window.ApplicationDetailView = Backbone.View.extend({
     },
 
     fetch: function(callback) {
-        this.model.fetch(callback);
+        //this.model.fetch(callback);
     },
 
     change: function (event) {
