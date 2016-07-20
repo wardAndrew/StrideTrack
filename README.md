@@ -1,10 +1,8 @@
-StrideTrack
-===========
+
 
 Installation Instructions
 
 1. Clone the repository
-	git clone https://github.com/rdAndrew/StrideTrack.git
 2. Install node packages
 	npm install
 3. Configure postgress connection string in config.json
